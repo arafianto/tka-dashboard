@@ -1,0 +1,60 @@
+:root{
+  --brand-primary:#4F46E5; /* indigo-600 */
+  --brand-primary-700:#4338CA;
+  --brand-secondary:#06B6D4; /* cyan-500 */
+  --brand-accent:#F59E0B; /* amber-500 */
+  --brand-danger:#EF4444; /* red-500 */
+  --brand-warning:#F59E0B; /* amber-500 */
+  --brand-info:#0EA5E9; /* sky-500 */
+  --sidebar-bg: #111827; /* gray-900 */
+  --sidebar-link:#E5E7EB; /* gray-200 */
+  --sidebar-link-active:#FFFFFF;
+}
+
+body{
+  font-family:'Poppins', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+}
+
+.sidebar{
+  background:linear-gradient(180deg, var(--sidebar-bg) 0%, #0B1220 100%);
+}
+
+.nav .nav-link{
+  color:var(--sidebar-link) !important;
+  border-radius:.5rem;
+}
+.nav .nav-link:hover{
+  background-color:rgba(255,255,255,.08);
+  color:var(--sidebar-link-active) !important;
+}
+
+.btn-primary{ background-color:var(--brand-primary); border-color:var(--brand-primary); }
+.btn-primary:hover{ background-color:var(--brand-primary-700); border-color:var(--brand-primary-700); }
+
+.btn-outline-light{ border-color:rgba(255,255,255,.4); color:#fff; }
+.btn-outline-light:hover{ background-color:#fff; color:#000; }
+
+.card .card-header.bg-danger{ background-color:var(--brand-danger) !important; }
+.card .card-header.bg-warning{ background-color:var(--brand-warning) !important; }
+.card .card-header.bg-info{ background-color:var(--brand-info) !important; }
+
+.display-6{ font-weight:600; }
+
+/* Responsive layout adjustments */
+@media (min-width: 992px){
+  .sidebar{
+    width:260px;
+    position:fixed;
+    top:0;
+    left:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .content{ margin-left:260px; }
+}
+
+@media (max-width: 991.98px){
+  .content{ margin-left: 0; }
+  .sidebar{ width: 100%; }
+}
+

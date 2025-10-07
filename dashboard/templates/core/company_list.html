@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Perusahaan{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Perusahaan</h2>
+  <a href="{% url 'company_create' %}" class="btn btn-primary">Tambah Perusahaan</a>
+</div>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Industri</th>
+        <th>Kontak</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in companies %}
+      <tr>
+        <td>{{ c.name }}</td>
+        <td>{{ c.industry }}</td>
+        <td>{{ c.contact_person }}</td>
+        <td>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'company_update' c.id %}">Edit</a>
+          <form class="d-inline" method="post" action="{% url 'company_delete' c.id %}">{% csrf_token %}
+            <button class="btn btn-sm btn-outline-danger">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="text-center">Belum ada perusahaan.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+

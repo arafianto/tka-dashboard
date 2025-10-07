@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - TKA{% endblock %}
+{% block content %}
+<h2 class="mb-4">Dashboard</h2>
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h6>Total TKA Aktif</h6>
+        <div class="display-6">{{ total_workers }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h6>Dokumen Aktif</h6>
+        <div class="display-6">{{ total_active_docs }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h6>Dokumen Kedaluwarsa</h6>
+        <div class="display-6">{{ total_expired_docs }}</div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<div class="d-flex align-items-center justify-content-between">
+  <h4>Dokumen Akan Habis</h4>
+  <div>
+    <a href="{% url 'export_workers_csv' %}" class="btn btn-outline-secondary btn-sm">Export Pekerja (CSV)</a>
+    <a href="{% url 'export_documents_csv' %}" class="btn btn-outline-secondary btn-sm">Export Dokumen (CSV)</a>
+  </div>
+  
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-md-4">
+    <div class="card border-danger">
+      <div class="card-header bg-danger text-white">≤ 30 Hari</div>
+      <div class="card-body p-2">
+        {% if bucket30 %}
+          {% for worker, docs in bucket30.items %}
+            <div class="mb-2">
+              <div class="fw-bold"><a href="{% url 'worker_detail' worker.id %}">{{ worker.name }}</a> <span class="text-muted">({{ worker.company.name }})</span></div>
+              <ul class="mb-0">
+                {% for d in docs %}
+                  <li>{{ d.type }} • {{ d.document_number }} • Berakhir: {{ d.expiry_date }} ({{ d.days_until_expiry }} hari)
+                    <a href="{% url 'document_renew' d.id %}" class="btn btn-sm btn-outline-primary ms-1">Perpanjang</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-muted small">Tidak ada dokumen.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-warning">
+      <div class="card-header bg-warning">≤ 60 Hari</div>
+      <div class="card-body p-2">
+        {% if bucket60 %}
+          {% for worker, docs in bucket60.items %}
+            <div class="mb-2">
+              <div class="fw-bold"><a href="{% url 'worker_detail' worker.id %}">{{ worker.name }}</a> <span class="text-muted">({{ worker.company.name }})</span></div>
+              <ul class="mb-0">
+                {% for d in docs %}
+                  <li>{{ d.type }} • {{ d.document_number }} • Berakhir: {{ d.expiry_date }} ({{ d.days_until_expiry }} hari)
+                    <a href="{% url 'document_renew' d.id %}" class="btn btn-sm btn-outline-primary ms-1">Perpanjang</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-muted small">Tidak ada dokumen.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-info">
+      <div class="card-header bg-info">≤ 90 Hari</div>
+      <div class="card-body p-2">
+        {% if bucket90 %}
+          {% for worker, docs in bucket90.items %}
+            <div class="mb-2">
+              <div class="fw-bold"><a href="{% url 'worker_detail' worker.id %}">{{ worker.name }}</a> <span class="text-muted">({{ worker.company.name }})</span></div>
+              <ul class="mb-0">
+                {% for d in docs %}
+                  <li>{{ d.type }} • {{ d.document_number }} • Berakhir: {{ d.expiry_date }} ({{ d.days_until_expiry }} hari)
+                    <a href="{% url 'document_renew' d.id %}" class="btn btn-sm btn-outline-primary ms-1">Perpanjang</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-muted small">Tidak ada dokumen.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

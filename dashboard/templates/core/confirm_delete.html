@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Konfirmasi Hapus{% endblock %}
+{% block content %}
+<h3 class="mb-3">Konfirmasi Hapus</h3>
+<p>Anda yakin ingin menghapus: <strong>{{ obj }}</strong>?</p>
+<form method="post">
+  {% csrf_token %}
+  <a href="javascript:history.back()" class="btn btn-outline-secondary">Batal</a>
+  <button class="btn btn-danger">Hapus</button>
+</form>
+{% endblock %}
+

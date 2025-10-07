@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Pekerja{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Pekerja</h2>
+  <a href="{% url 'worker_create' %}" class="btn btn-primary">Tambah Pekerja</a>
+</div>
+
+<form class="row g-2 mb-3" method="get">
+  <div class="col-auto">
+    <input type="text" class="form-control" name="q" placeholder="Cari nama / paspor / perusahaan" value="{{ q }}">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-secondary">Cari</button>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>No Paspor</th>
+        <th>Kewarganegaraan</th>
+        <th>Perusahaan</th>
+        <th>Jabatan</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for w in workers %}
+      <tr>
+        <td><a href="{% url 'worker_detail' w.id %}">{{ w.name }}</a></td>
+        <td>{{ w.passport_number }}</td>
+        <td>{{ w.nationality }}</td>
+        <td>{{ w.company.name }}</td>
+        <td>{{ w.position }}</td>
+        <td>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'worker_update' w.id %}">Edit</a>
+          <form class="d-inline" method="post" action="{% url 'worker_delete' w.id %}">{% csrf_token %}
+            <button class="btn btn-sm btn-outline-danger">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-center">Belum ada pekerja.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if page_obj.paginator.num_pages > 1 %}
+  <nav aria-label="Pagination">
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">Sebelumnya</a></li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">Sebelumnya</span></li>
+      {% endif %}
+      <li class="page-item disabled"><span class="page-link">Hal {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+      {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Berikutnya</a></li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">Berikutnya</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}
+

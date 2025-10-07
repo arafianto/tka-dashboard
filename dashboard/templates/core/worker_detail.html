@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Detail Pekerja{% endblock %}
+{% block content %}
+<h2 class="mb-3">{{ worker.name }}</h2>
+<div class="row mb-4">
+  <div class="col-md-6">
+    <dl class="row">
+      <dt class="col-sm-4">Paspor</dt><dd class="col-sm-8">{{ worker.passport_number }}</dd>
+      <dt class="col-sm-4">Kewarganegaraan</dt><dd class="col-sm-8">{{ worker.nationality }}</dd>
+      <dt class="col-sm-4">Perusahaan</dt><dd class="col-sm-8">{{ worker.company.name }}</dd>
+      <dt class="col-sm-4">Jabatan</dt><dd class="col-sm-8">{{ worker.position }}</dd>
+      <dt class="col-sm-4">Tanggal Lahir</dt><dd class="col-sm-8">{{ worker.birth_date }}</dd>
+      <dt class="col-sm-4">Mulai Kerja</dt><dd class="col-sm-8">{{ worker.start_date }}</dd>
+    </dl>
+  </div>
+  <div class="col-md-3">
+    {% if worker.photo %}
+      <img class="img-fluid img-thumbnail" src="{{ worker.photo.url }}" alt="Foto {{ worker.name }}">
+    {% endif %}
+  </div>
+</div>
+
+<h4>Dokumen</h4>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Jenis</th>
+        <th>No Dokumen</th>
+        <th>Terbit</th>
+        <th>Berakhir</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in documents %}
+      <tr>
+        <td>{{ d.type }}</td>
+        <td>{{ d.document_number }}</td>
+        <td>{{ d.issue_date }}</td>
+        <td>{{ d.expiry_date }}</td>
+        <td>{{ d.status }}</td>
+        <td>
+          <a href="{% url 'document_renew' d.id %}" class="btn btn-sm btn-primary">Perpanjang</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-center">Belum ada dokumen.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
