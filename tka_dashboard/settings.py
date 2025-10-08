@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,26 +44,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dashboard',
-    'axes',
-    'django_otp',
-    'django_otp.plugins.otp_totp',
-    'two_factor',
-    'csp',
-    'guardian',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'axes.middleware.AxesMiddleware',
-    'django_otp.middleware.OTPMiddleware',
-    'csp.middleware.CSPMiddleware',
     'dashboard.middleware.LoginRequiredMiddleware',
 ]
 
@@ -92,37 +81,32 @@ WSGI_APPLICATION = 'tka_dashboard.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Prefer DATABASE_URL (Render/Heroku). Fallback to explicit Postgres env vars, else SQLite.
-database_url = os.getenv('DATABASE_URL')
-if database_url:
+# Load .env was already called above
+
+POSTGRES_NAME = os.getenv('POSTGRES_DB')
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.getenv('POSTGRES_HOST', 'localhost')
+POSTGRES_PORT = os.getenv('POSTGRES_PORT', '5432')
+
+if POSTGRES_NAME and POSTGRES_USER and POSTGRES_PASSWORD:
     DATABASES = {
-        'default': dj_database_url.parse(database_url, conn_max_age=600, ssl_require=True)
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': POSTGRES_NAME,
+            'USER': POSTGRES_USER,
+            'PASSWORD': POSTGRES_PASSWORD,
+            'HOST': POSTGRES_HOST,
+            'PORT': POSTGRES_PORT,
+        }
     }
 else:
-    POSTGRES_NAME = os.getenv('POSTGRES_DB')
-    POSTGRES_USER = os.getenv('POSTGRES_USER')
-    POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
-    POSTGRES_HOST = os.getenv('POSTGRES_HOST', 'localhost')
-    POSTGRES_PORT = os.getenv('POSTGRES_PORT', '5432')
-
-    if POSTGRES_NAME and POSTGRES_USER and POSTGRES_PASSWORD:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': POSTGRES_NAME,
-                'USER': POSTGRES_USER,
-                'PASSWORD': POSTGRES_PASSWORD,
-                'HOST': POSTGRES_HOST,
-                'PORT': POSTGRES_PORT,
-            }
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
-    else:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
+    }
 
 
 # Password validation
@@ -165,9 +149,6 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# WhiteNoise static files storage for efficient serving
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -194,29 +175,5 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') if os.getenv('USE_
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
 
 AUTHENTICATION_BACKENDS = [
-    'axes.backends.AxesStandaloneBackend',  # brute-force protection
     'django.contrib.auth.backends.ModelBackend',
-    'guardian.backends.ObjectPermissionBackend',
 ]
-
-# AXES configuration (basic sane defaults)
-AXES_FAILURE_LIMIT = 5
-AXES_COOLOFF_TIME = 1  # hours
-AXES_ONLY_USER_FAILURES = True
-AXES_LOCKOUT_CALLABLE = None
-AXES_LOCKOUT_TEMPLATE = None
-
-# Two-factor settings (basic)
-TWO_FACTOR_PATCH_ADMIN = True
-
-# django-csp settings (use official setting names)
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_STYLE_SRC = ("'self'", 'https://cdn.jsdelivr.net', 'https://fonts.googleapis.com')
-CSP_SCRIPT_SRC = ("'self'", 'https://cdn.jsdelivr.net')
-CSP_FONT_SRC = ("'self'", 'https://fonts.gstatic.com', 'https://fonts.googleapis.com', 'data:')
-CSP_IMG_SRC = ("'self'", 'data:')
-# If inline styles/scripts are needed, prefer nonces; keep 'unsafe-inline' off by default
-CSP_INCLUDE_NONCE_IN = ('script-src', 'style-src')
-
-# Guardian
-ANONYMOUS_USER_NAME = 'anonymous'
