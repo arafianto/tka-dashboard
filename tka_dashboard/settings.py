@@ -32,7 +32,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'dev-only-secret-not-for-production')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = ['arafianto.pythonanywhere.com', 'localhost']
+
 
 
 # Application definition
@@ -108,6 +109,9 @@ if POSTGRES_NAME and POSTGRES_USER and POSTGRES_PASSWORD:
             'PASSWORD': 'tanjungduren13',
             'HOST': 'db.ytcfdomhpnqljfvavvzf.supabase.co',
             'PORT': '5432',
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
         }
     }
 else:
