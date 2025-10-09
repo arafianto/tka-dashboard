@@ -8,7 +8,38 @@ import csv
 from django.contrib.auth.decorators import login_required
 
 from .models import Company, Worker, Document, RenewalHistory
-from .forms import CompanyForm, WorkerForm, DocumentForm, RenewalForm
+from .forms import CompanyForm, WorkerForm, WorkerWithDocumentsForm, DocumentForm, RenewalForm
+
+
+def create_documents_from_form(worker, cleaned_data):
+    """Helper function to create documents from form data"""
+    document_types = [
+        ('rptka', 'RPTKA'),
+        ('imta', 'IMTA'),
+        ('visa', 'VISA'),
+        ('kitas', 'KITAS'),
+        ('sktt', 'SKTT'),
+        ('passport', 'PASSPORT'),
+    ]
+    
+    for prefix, doc_type in document_types:
+        number_field = f"{prefix}_number"
+        issue_field = f"{prefix}_issue"
+        expiry_field = f"{prefix}_expiry"
+        
+        # Handle passport differently since it has a different field name
+        if prefix == 'passport':
+            number_field = f"{prefix}_number_doc"
+        
+        if cleaned_data.get(number_field) and cleaned_data.get(issue_field) and cleaned_data.get(expiry_field):
+            Document.objects.create(
+                worker=worker,
+                type=doc_type,
+                document_number=cleaned_data[number_field],
+                issue_date=cleaned_data[issue_field],
+                expiry_date=cleaned_data[expiry_field],
+                status=Document.Status.ACTIVE
+            )
 
 
 @login_required
@@ -124,7 +155,7 @@ def worker_list(request):
             | Q(company__name__icontains=query)
             | Q(nationality__icontains=query)
         )
-    workers = workers.select_related('company').order_by('name')
+    workers = workers.select_related('company').prefetch_related('documents').order_by('name')
     paginator = Paginator(workers, 25)
     page_obj = paginator.get_page(request.GET.get('page'))
     return render(request, 'core/worker_list.html', {'workers': page_obj, 'q': query, 'page_obj': page_obj})
@@ -145,22 +176,26 @@ def worker_detail(request, pk):
 def worker_create(request):
     profile = getattr(request.user, 'profile', None)
     if request.method == 'POST':
-        form = WorkerForm(request.POST, request.FILES)
+        form = WorkerWithDocumentsForm(request.POST, request.FILES)
         if profile and profile.role == 'CLIENT' and profile.company_id:
             # enforce company to client's company
             if form.is_valid():
                 worker = form.save(commit=False)
                 worker.company_id = profile.company_id
                 worker.save()
-                return redirect('worker_list')
+                # Create documents if provided
+                create_documents_from_form(worker, form.cleaned_data)
+                return redirect('worker_detail', pk=worker.id)
         if form.is_valid():
-            form.save()
-            return redirect('worker_list')
+            worker = form.save()
+            # Create documents if provided
+            create_documents_from_form(worker, form.cleaned_data)
+            return redirect('worker_detail', pk=worker.id)
     else:
-        form = WorkerForm()
+        form = WorkerWithDocumentsForm()
     if profile and profile.role == 'CLIENT' and profile.company_id:
         form.fields['company'].queryset = Company.objects.filter(id=profile.company_id)
-    return render(request, 'core/form.html', {'form': form, 'title': 'Tambah Pekerja'})
+    return render(request, 'core/worker_form_with_documents.html', {'form': form, 'title': 'Tambah Pekerja & Dokumen'})
 
 
 @login_required
@@ -213,6 +248,8 @@ def document_list(request):
 @login_required
 def document_create(request):
     profile = getattr(request.user, 'profile', None)
+    worker_id = request.GET.get('worker')
+    
     if request.method == 'POST':
         form = DocumentForm(request.POST)
         if form.is_valid():
@@ -222,11 +259,23 @@ def document_create(request):
                 if doc.worker.company_id != profile.company_id:
                     return redirect('document_list')
             doc.save()
+            # Redirect back to worker detail if came from there
+            if worker_id:
+                return redirect('worker_detail', pk=worker_id)
             return redirect('document_list')
     else:
         form = DocumentForm()
+        # Pre-select worker if specified in URL
+        if worker_id:
+            try:
+                worker = Worker.objects.get(id=worker_id)
+                form.fields['worker'].initial = worker
+            except Worker.DoesNotExist:
+                pass
+    
     if profile and profile.role == 'CLIENT' and profile.company_id:
         form.fields['worker'].queryset = Worker.objects.filter(company_id=profile.company_id)
+    
     return render(request, 'core/form.html', {'form': form, 'title': 'Tambah Dokumen'})
 
 

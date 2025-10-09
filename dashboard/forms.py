@@ -39,6 +39,128 @@ class WorkerForm(forms.ModelForm):
         }
 
 
+class WorkerWithDocumentsForm(forms.ModelForm):
+    # Document fields
+    rptka_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Nomor RPTKA"}),
+        label="RPTKA"
+    )
+    rptka_issue = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Terbit RPTKA"
+    )
+    rptka_expiry = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Berakhir RPTKA"
+    )
+    
+    imta_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Nomor IMTA/Notifikasi"}),
+        label="IMTA/Notifikasi"
+    )
+    imta_issue = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Terbit IMTA"
+    )
+    imta_expiry = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Berakhir IMTA"
+    )
+    
+    visa_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Nomor Visa"}),
+        label="Visa"
+    )
+    visa_issue = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Terbit Visa"
+    )
+    visa_expiry = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Berakhir Visa"
+    )
+    
+    kitas_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Nomor KITAS"}),
+        label="KITAS"
+    )
+    kitas_issue = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Terbit KITAS"
+    )
+    kitas_expiry = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Berakhir KITAS"
+    )
+    
+    sktt_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Nomor SKTT"}),
+        label="SKTT"
+    )
+    sktt_issue = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Terbit SKTT"
+    )
+    sktt_expiry = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Berakhir SKTT"
+    )
+    
+    passport_number_doc = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Nomor Paspor"}),
+        label="Paspor"
+    )
+    passport_issue = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Terbit Paspor"
+    )
+    passport_expiry = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        label="Tanggal Berakhir Paspor"
+    )
+
+    class Meta:
+        model = Worker
+        fields = [
+            "name",
+            "passport_number",
+            "nationality",
+            "birth_date",
+            "company",
+            "position",
+            "photo",
+            "start_date",
+        ]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Nama pekerja"}),
+            "passport_number": forms.TextInput(attrs={"class": "form-control", "placeholder": "Nomor paspor"}),
+            "nationality": forms.TextInput(attrs={"class": "form-control", "placeholder": "Kewarganegaraan"}),
+            "birth_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "company": forms.Select(attrs={"class": "form-select"}),
+            "position": forms.TextInput(attrs={"class": "form-control", "placeholder": "Jabatan"}),
+            "photo": forms.ClearableFileInput(attrs={"class": "form-control"}),
+            "start_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        }
+
+
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document

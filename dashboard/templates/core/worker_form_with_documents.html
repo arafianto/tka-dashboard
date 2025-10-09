@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>{{ title }}</h2>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  
+  <!-- Worker Information -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Informasi Pekerja</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+              <div class="text-danger">{{ form.name.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.passport_number.id_for_label }}" class="form-label">{{ form.passport_number.label }}</label>
+            {{ form.passport_number }}
+            {% if form.passport_number.errors %}
+              <div class="text-danger">{{ form.passport_number.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.nationality.id_for_label }}" class="form-label">{{ form.nationality.label }}</label>
+            {{ form.nationality }}
+            {% if form.nationality.errors %}
+              <div class="text-danger">{{ form.nationality.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.birth_date.id_for_label }}" class="form-label">{{ form.birth_date.label }}</label>
+            {{ form.birth_date }}
+            {% if form.birth_date.errors %}
+              <div class="text-danger">{{ form.birth_date.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.company.id_for_label }}" class="form-label">{{ form.company.label }}</label>
+            {{ form.company }}
+            {% if form.company.errors %}
+              <div class="text-danger">{{ form.company.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.position.id_for_label }}" class="form-label">{{ form.position.label }}</label>
+            {{ form.position }}
+            {% if form.position.errors %}
+              <div class="text-danger">{{ form.position.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.start_date.id_for_label }}" class="form-label">{{ form.start_date.label }}</label>
+            {{ form.start_date }}
+            {% if form.start_date.errors %}
+              <div class="text-danger">{{ form.start_date.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.photo.id_for_label }}" class="form-label">{{ form.photo.label }}</label>
+            {{ form.photo }}
+            {% if form.photo.errors %}
+              <div class="text-danger">{{ form.photo.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documents Information -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Dokumen (Opsional)</h5>
+      <small class="text-muted">Isi dokumen yang tersedia. Kosongkan jika tidak ada.</small>
+    </div>
+    <div class="card-body">
+      <!-- RPTKA -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <h6 class="text-primary">RPTKA</h6>
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.rptka_number.id_for_label }}" class="form-label">{{ form.rptka_number.label }}</label>
+          {{ form.rptka_number }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.rptka_issue.id_for_label }}" class="form-label">{{ form.rptka_issue.label }}</label>
+          {{ form.rptka_issue }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.rptka_expiry.id_for_label }}" class="form-label">{{ form.rptka_expiry.label }}</label>
+          {{ form.rptka_expiry }}
+        </div>
+      </div>
+
+      <!-- IMTA -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <h6 class="text-primary">IMTA/Notifikasi</h6>
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.imta_number.id_for_label }}" class="form-label">{{ form.imta_number.label }}</label>
+          {{ form.imta_number }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.imta_issue.id_for_label }}" class="form-label">{{ form.imta_issue.label }}</label>
+          {{ form.imta_issue }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.imta_expiry.id_for_label }}" class="form-label">{{ form.imta_expiry.label }}</label>
+          {{ form.imta_expiry }}
+        </div>
+      </div>
+
+      <!-- Visa -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <h6 class="text-primary">Visa</h6>
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.visa_number.id_for_label }}" class="form-label">{{ form.visa_number.label }}</label>
+          {{ form.visa_number }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.visa_issue.id_for_label }}" class="form-label">{{ form.visa_issue.label }}</label>
+          {{ form.visa_issue }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.visa_expiry.id_for_label }}" class="form-label">{{ form.visa_expiry.label }}</label>
+          {{ form.visa_expiry }}
+        </div>
+      </div>
+
+      <!-- KITAS -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <h6 class="text-primary">KITAS</h6>
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.kitas_number.id_for_label }}" class="form-label">{{ form.kitas_number.label }}</label>
+          {{ form.kitas_number }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.kitas_issue.id_for_label }}" class="form-label">{{ form.kitas_issue.label }}</label>
+          {{ form.kitas_issue }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.kitas_expiry.id_for_label }}" class="form-label">{{ form.kitas_expiry.label }}</label>
+          {{ form.kitas_expiry }}
+        </div>
+      </div>
+
+      <!-- SKTT -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <h6 class="text-primary">SKTT</h6>
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.sktt_number.id_for_label }}" class="form-label">{{ form.sktt_number.label }}</label>
+          {{ form.sktt_number }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.sktt_issue.id_for_label }}" class="form-label">{{ form.sktt_issue.label }}</label>
+          {{ form.sktt_issue }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.sktt_expiry.id_for_label }}" class="form-label">{{ form.sktt_expiry.label }}</label>
+          {{ form.sktt_expiry }}
+        </div>
+      </div>
+
+      <!-- Passport -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <h6 class="text-primary">Paspor</h6>
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.passport_number_doc.id_for_label }}" class="form-label">{{ form.passport_number_doc.label }}</label>
+          {{ form.passport_number_doc }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.passport_issue.id_for_label }}" class="form-label">{{ form.passport_issue.label }}</label>
+          {{ form.passport_issue }}
+        </div>
+        <div class="col-md-4">
+          <label for="{{ form.passport_expiry.id_for_label }}" class="form-label">{{ form.passport_expiry.label }}</label>
+          {{ form.passport_expiry }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <a href="{% url 'worker_list' %}" class="btn btn-secondary">Batal</a>
+    <button type="submit" class="btn btn-primary">Simpan Pekerja & Dokumen</button>
+  </div>
+</form>
+{% endblock %}

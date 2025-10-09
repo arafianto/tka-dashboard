@@ -29,12 +29,22 @@
         <td>{{ d.expiry_date }}</td>
         <td>{{ d.status }}</td>
         <td>{{ d.days_until_expiry }}</td>
-        <td>
-          <a class="btn btn-sm btn-outline-secondary" href="{% url 'document_update' d.id %}">Edit</a>
-          <a class="btn btn-sm btn-primary" href="{% url 'document_renew' d.id %}">Perpanjang</a>
-          <form class="d-inline" method="post" action="{% url 'document_delete' d.id %}">{% csrf_token %}
-            <button class="btn btn-sm btn-outline-danger">Hapus</button>
-          </form>
+        <td class="text-end">
+          <div class="btn-group">
+            <a class="btn btn-sm btn-primary" href="{% url 'document_renew' d.id %}">Perpanjang</a>
+            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Aksi">
+              <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'document_update' d.id %}">Edit</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form method="post" action="{% url 'document_delete' d.id %}">{% csrf_token %}
+                  <button class="dropdown-item text-danger" type="submit">Hapus</button>
+                </form>
+              </li>
+            </ul>
+          </div>
         </td>
       </tr>
       {% empty %}

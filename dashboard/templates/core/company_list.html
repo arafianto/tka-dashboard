@@ -21,11 +21,21 @@
         <td>{{ c.name }}</td>
         <td>{{ c.industry }}</td>
         <td>{{ c.contact_person }}</td>
-        <td>
-          <a class="btn btn-sm btn-outline-secondary" href="{% url 'company_update' c.id %}">Edit</a>
-          <form class="d-inline" method="post" action="{% url 'company_delete' c.id %}">{% csrf_token %}
-            <button class="btn btn-sm btn-outline-danger">Hapus</button>
-          </form>
+        <td class="text-end">
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Aksi">
+              &#8942;
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'company_update' c.id %}">Edit</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form method="post" action="{% url 'company_delete' c.id %}">{% csrf_token %}
+                  <button class="dropdown-item text-danger" type="submit">Hapus</button>
+                </form>
+              </li>
+            </ul>
+          </div>
         </td>
       </tr>
       {% empty %}

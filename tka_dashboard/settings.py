@@ -93,11 +93,11 @@ if POSTGRES_NAME and POSTGRES_USER and POSTGRES_PASSWORD:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': POSTGRES_NAME,
-            'USER': POSTGRES_USER,
-            'PASSWORD': POSTGRES_PASSWORD,
-            'HOST': POSTGRES_HOST,
-            'PORT': POSTGRES_PORT,
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': 'tanjungduren13',
+            'HOST': 'db.ytcfdomhpnqljfvavvzf.supabase.co',
+            'PORT': '5432',
         }
     }
 else:

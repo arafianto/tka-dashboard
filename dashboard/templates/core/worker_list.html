@@ -7,8 +7,8 @@
 </div>
 
 <form class="row g-2 mb-3" method="get">
-  <div class="col-auto">
-    <input type="text" class="form-control" name="q" placeholder="Cari nama / paspor / perusahaan" value="{{ q }}">
+  <div class="col-auto ">
+    <input type="text" class="form-control" name="q" placeholder="Cari TKA" value="{{ q }}">
   </div>
   <div class="col-auto">
     <button class="btn btn-outline-secondary">Cari</button>
@@ -22,8 +22,9 @@
         <th>Nama</th>
         <th>No Paspor</th>
         <th>Kewarganegaraan</th>
-        <th>Perusahaan</th>
         <th>Jabatan</th>
+        <th>Dokumen</th>
+        <th>Status</th>
         <th></th>
       </tr>
     </thead>
@@ -33,17 +34,49 @@
         <td><a href="{% url 'worker_detail' w.id %}">{{ w.name }}</a></td>
         <td>{{ w.passport_number }}</td>
         <td>{{ w.nationality }}</td>
-        <td>{{ w.company.name }}</td>
         <td>{{ w.position }}</td>
         <td>
-          <a class="btn btn-sm btn-outline-secondary" href="{% url 'worker_update' w.id %}">Edit</a>
-          <form class="d-inline" method="post" action="{% url 'worker_delete' w.id %}">{% csrf_token %}
-            <button class="btn btn-sm btn-outline-danger">Hapus</button>
-          </form>
+          {% for doc in w.documents.all %}
+            <small class="d-block">{{ doc.type }}: {{ doc.document_number }}</small>
+          {% empty %}
+            <small class="text-muted">Belum ada dokumen</small>
+          {% endfor %}
+        </td>
+        <td>
+          {% for doc in w.documents.all %}
+            {% if doc.days_until_expiry < 0 %}
+              <span class="badge bg-danger">Kedaluwarsa</span>
+            {% elif doc.days_until_expiry <= 30 %}
+              <span class="badge bg-warning">{{ doc.days_until_expiry }} hari</span>
+            {% elif doc.days_until_expiry <= 90 %}
+              <span class="badge bg-info">{{ doc.days_until_expiry }} hari</span>
+            {% else %}
+              <span class="badge bg-success">Aktif</span>
+            {% endif %}
+          {% empty %}
+            <span class="text-muted">-</span>
+          {% endfor %}
+        </td>
+        <td class="text-end">
+          <div class="btn-group">
+            <a class="btn btn-sm btn-primary" href="{% url 'document_create' %}?worker={{ w.id }}">Tambah Dokumen</a>
+            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Aksi">
+              <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'worker_update' w.id %}">Edit</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form method="post" action="{% url 'worker_delete' w.id %}">{% csrf_token %}
+                  <button class="dropdown-item text-danger" type="submit">Hapus</button>
+                </form>
+              </li>
+            </ul>
+          </div>
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="6" class="text-center">Belum ada pekerja.</td></tr>
+      <tr><td colspan="8" class="text-center">Belum ada pekerja.</td></tr>
       {% endfor %}
     </tbody>
   </table>
